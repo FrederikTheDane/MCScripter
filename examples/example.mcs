@@ -1,9 +1,9 @@
 # this is a comment
 
 namespace example;
-var hello = "Hello";
+var hello = "Hello, World!";
 
 # Epic function
 function hello_world {
-    say(hello + " World!")
+    say(hello)
 }
