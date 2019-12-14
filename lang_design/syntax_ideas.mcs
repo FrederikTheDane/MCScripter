@@ -1,0 +1,54 @@
+# Single line comment
+
+
+# Sets the namespace used. Must be the top (non-comment) statement
+# Must be all lowercase
+namespace mcscripter;
+
+
+# No type checking. Alias for "/data modify storage ${namespace}:__global myVar set value 5"
+var myVar = 5;
+
+
+# Statically typed variables. Essentially the same as above (low priority)
+int myInt = 10;
+string myString = "its a crazy night";
+array myArray = [];
+float myFloat = 4.3;
+float anotherFloat = 6.0;
+selector fred = @a[name=FrederikTheDane];
+
+# Not sure whether this should be allowed without the decimal seperator
+float thirdFloat = 7;
+
+# Object declaration, statically typed
+object myObject = {
+    int myIntProperty : 3
+}
+
+var myDynamicObject = {
+    str : "string"
+    num : 3
+}
+
+# function definition
+# no parentheses indicate this will be exported as a standard minecraft function
+function funcName {
+    do tell(@a, "Hello, MCScripter!"); # insert the args into ${namespace}:__func_${callee_function_name} with the argument identifiers given by the callee
+}
+
+# internal function definition
+function tell(arg1: selector, arg2: string){
+    # local variables go in ${namespace}:__func_${current_function_name}
+    var formatted = f"tell ${selector} ${arg2}";
+    # destroy them when they go out of scope? (low priority)
+}
+
+# runs a function
+do funcName;
+
+
+# Formatted string. Could use the raw json text to do this with the "nbt" and "storage" tags
+f"Hello ${world}"
+
+/say This is a raw minecraft command, without any special formatting

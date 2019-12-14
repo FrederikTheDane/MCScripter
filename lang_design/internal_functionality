@@ -1,0 +1,40 @@
+# Consider storing all variables in an object unique to the scope
+# Such as:
+# /data merge storage example:__func_hello_world {__global : { hello : "Hello" }}     # For globals within the .mcfunction
+# /data merge storage example:__func_hello_world {__hello_world : { world : "World"}} # For functions
+# 
+# This might need an "export var my_export = 10" to do this:
+# /data modify storage example:__global my_export set value 10
+#
+# This could be retreived from any function within the namespace
+# with "external var my_export" like so:
+# /data get storage example:__global my_export
+#
+# DRAFT BELOW DOES NOT DO THIS
+
+# Set the NAMESPACE property to "example". This will be replaced in the entire script where applicable
+# This means that everything in the global scope of the example namespace will be available everywhere within the namespace
+# This means across ALL scripts in the example namespace so be careful with these
+# Does not actually fire a command
+namespace example; 
+
+# Will be put in "init.mcfunction"
+# /data modify storage example:__global hello set value "Hello"
+var hello = "Hello";
+
+# Function definition "hello_world"
+# Must not contain uppercase letters as minecraft will not recognize the identifier
+# Need to investigate what characters are allowed
+# Will be exported as "hello_world.mcfunction"
+function hello_world {
+    # /data modify storage example:__func_hello_world world set value "World"
+    var world = "World";
+    
+    # Built in command so simulate the actual minecraft command
+    # The /say command does not accept raw json so variables are out of the question here
+    # /tellraw @a ["[", {"selector": "@s"} ,"] ", {"nbt" : "hello", "storage": "example:__global"}, " ", {"nbt" : "world", "storage": "example:__func_hello_world"}]
+    say(hello + " " + world);
+}
+
+# Run all commands in hello_world.mcfunction
+do hello_world;

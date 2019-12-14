@@ -1,0 +1,7 @@
+BUILTIN tellraw @a ["[Server] ", {"nbt" : "arg", "storage": "mcscripter:__func_say"}]
+say(arg: var) 
+
+
+# Might just have to compile a version for every selector used in the source code
+BUILTIN tellraw ${player} ["[Server] ", {"nbt" : "arg", "storage": "mcscripter:__func_say"}]
+tell(player: selector, message: string) 

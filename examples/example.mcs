@@ -1,0 +1,9 @@
+# this is a comment
+
+namespace example;
+var hello = "Hello";
+
+# Epic function
+function hello_world {
+    say(hello + " World!")
+}
