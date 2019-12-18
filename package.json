@@ -2,16 +2,20 @@
   "name": "mcscripter",
   "version": "0.1.0",
   "description": "Transpile .mcs (MCScript) to minecraft commands",
-  "main": "./out/mcs.js",
+  "main": "./out/compiler.js",
   "directories": {
     "example": "examples"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./out/tests.js",
+    "build": "tsc"
   },
   "author": "FrederikTheDane",
   "license": "ISC",
   "dependencies": {
     "@types/node": "^12.12.17"
+  },
+  "devDependencies": {
+    "typescript": "^3.7.3"
   }
 }

@@ -43,12 +43,69 @@ export class Lexer {
         let result = ""
         let wordType: TokenType.keyword | TokenType.identifier = TokenType.identifier
 
-        while ((/[a-z]/i).test(this.char!) || (/[0-9]/).test(this.char!) || this.char == "_") {
+        while (this.char !== undefined && ((/[a-z]/).test(this.char!) || (/[0-9]/).test(this.char!) || this.char == "_")) {
             result += this.char!
             this.advance()
         }
         if (Keywords.includes(result)) wordType = TokenType.keyword
         return new Token(wordType, result)        
+    }
+
+    //Yields characters in a string until the end is reached
+    //
+    //Includes the opening and terminating quotation marks as well as any backslashes
+    //because they are needed anyways in the minecraft commmands
+    *stringGen() {
+        //Character in the previous iteration
+        let prevChar = ""
+        while (true) {
+            //If it's not the first character
+            if (this.char == '"' && prevChar !== "") {
+                //If its not escaped, return the charcter
+                if (prevChar !== "\\") {
+                    return this.char
+                }
+            }
+            yield this.char
+            this.advance()
+        }
+    }
+
+    fullString() : string {
+        let full = ""
+        let generator = this.stringGen()
+        let next
+        do {
+            next = generator.next()
+            full += next.value
+        } while (!next.done)
+
+        return full
+    }
+
+    string() : Token {
+        return new Token(TokenType.string, this.fullString())
+    }
+
+    selector() : Token {
+        let result = ""
+        while (this.char !== "]") {
+            if (this.char == '"') {
+                result += this.fullString()
+            }
+            this.advance()
+            result += this.char
+        }
+        return new Token(TokenType.selector, result)
+    }
+
+    operator() : Token {
+        let result = ""
+        while (true) {
+            this.advance()
+            break;
+        }
+        return new Token(TokenType.equals)
     }
 
     nextToken() : Token {
@@ -81,15 +138,23 @@ export class Lexer {
                     break;
             }
             
-            if ((/[a-z]/i).test(this.char) || this.char == "_") {
+            if ((/[a-z]/).test(this.char) || this.char == "_") {
                 return this.word()
             }
 
-            if (Number(this.char) !== NaN) {
+            if (this.char == '"') {
+                return this.string()
+            }
+
+            if (this.char == "@") {
+                return this.selector()
+            }
+
+            if (!isNaN(Number(this.char))) {
                 return this.number()
             }
 
-            throw `Invalid character: ${this.char}`
+            this.err()
         }
         return new Token(TokenType.eof)
     }
