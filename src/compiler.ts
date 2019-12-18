@@ -1,10 +1,10 @@
-import * as path from "path";
 import * as fs from "fs";
 import * as readline from "readline";
-import * as stream from "stream"
-import { ReservedSymbols } from "./pipeline/reserved";
+import { Lexer } from "./pipeline/lexer/lexer"
+import { TokenType, Token } from "./pipeline/tokens";
 
 let tree = {}
+let tokens: Token[] = []
 
 const commentRegex = /^([^#]*)/
 
@@ -28,5 +28,12 @@ reader.on("line", (line) => {
 })
 
 reader.on("close", () => {
-    
+    let lexer = new Lexer(source)
+    let token: Token
+    do {
+        token = lexer.nextToken()
+        tokens.push(token)
+        console.log(TokenType[token.type] + " " + (token.value ? token.value : ""))
+    } while (token.type !== TokenType.eof)
+    console.dir(tokens)
 })
